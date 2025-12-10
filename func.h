@@ -7,3 +7,4 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
+int is_empty(Node* head);
