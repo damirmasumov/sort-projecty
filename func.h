@@ -19,3 +19,4 @@ Node* insertion_sort_list(Node* head);
 void split_list(Node* head, Node** left, Node** right);
 Node* merge_lists(Node* a, Node* b);
 Node* merge_sort_list(Node* head);
+int is_valid_integer(char* str);

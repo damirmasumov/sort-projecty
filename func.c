@@ -78,3 +78,17 @@ Node* copy_stack(Node* head) {
     free_stack(temp);
     return result;
 }
+
+int is_valid_integer(char* str) {
+    if (!str) return 0;
+    char* s = str;
+    while (*s == ' ' || *s == '\t') s++;
+    if (*s == '\0') return 0;
+    if (*s == '-' || *s == '+') s++;
+    if (*s == '\0') return 0;
+    while (*s) {
+        if (!isdigit((unsigned char)*s)) return 0;
+        s++;
+    }
+    return 1;
+}
