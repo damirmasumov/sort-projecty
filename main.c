@@ -80,12 +80,12 @@ int main() {
         while (getchar() != '\n');
 
         while (edit == 'y' || edit == 'Y') {
-            printf("\n add Ч добавить, remove Ч удалить, exit Ч выйти: ");
+            printf("\n a Ч добавить, r Ч удалить, e Ч выйти: ");
             char op;
             scanf(" %c", &op);
             while (getchar() != '\n');
 
-            if (op == 'add') {
+            if (op == 'a') {
                 printf("„исло: ");
                 int num;
                 if (scanf("%d", &num) != 1) {
@@ -96,24 +96,33 @@ int main() {
                 while (getchar() != '\n');
                 push(&stack, num);
                 print_stack(stack);
-            } else if (op == 'remove') {
+            } else if (op == 'r') {
                 if (!is_empty(stack)) {
                     printf("”далено: %d\n", pop(&stack));
                     print_stack(stack);
                 } else {
                     printf("—тек пуст!\n");
                 }
-            } else if (op == 'exit') {
+            } else if (op == 'e') {
                 break;
             }
         }
 
+        int size = 0;
+        Node* temp = stack;
+        while (temp != NULL) {
+            size++;
+            temp = temp->next;
+        }
+       
         printf("\n--- —ортировка пр€мым включением ---\n");
         Node* copy1 = copy_stack(stack);
         clock_t start = clock();
         Node* sorted1 = insertion_sort_list(copy1);
         clock_t end = clock();
-        printf("¬рем€: %.6f сек\n", ((double)(end - start)) / CLOCKS_PER_SEC);
+        double time1 = ((double)(end - start)) / CLOCKS_PER_SEC;
+        print_stack(sorted1);
+        printf("¬рем€: %.6f сек\n", time1);
         free_stack(sorted1);
 
         printf("\n--- —ортировка сли€нием ---\n");
@@ -121,9 +130,20 @@ int main() {
         start = clock();
         Node* sorted2 = merge_sort_list(copy2);
         end = clock();
-        printf("¬рем€: %.6f сек\n", ((double)(end - start)) / CLOCKS_PER_SEC);
+        double time2 = ((double)(end - start)) / CLOCKS_PER_SEC;
+        print_stack(sorted2);
+        printf("¬рем€: %.6f сек\n", time2);
         free_stack(sorted2);
 
+
+        FILE* log_file = fopen("sorting_results.csv", "a");
+        if (log_file != NULL) {
+            fprintf(log_file, "InsertionSort,%d,%.6f\n", size, time1);
+            fprintf(log_file, "MergeSort,%d,%.6f\n", size, time2);
+            fclose(log_file);
+        }
+        
+        
         free_stack(stack);
 
         printf("\n«апустить снова? (y/n): ");

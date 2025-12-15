@@ -1,0 +1,9 @@
+Algorithm,Size,Time
+InsertionSort,10,0.000000
+MergeSort,10,0.000000
+InsertionSort,10000,0.152000
+MergeSort,10000,0.002000
+InsertionSort,8,0.000000
+MergeSort,8,0.000000
+InsertionSort,90000,38.201000
+MergeSort,90000,0.047000
