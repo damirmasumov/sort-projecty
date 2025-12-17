@@ -11,6 +11,8 @@ int main() {
     while (continue_program == 'y' || continue_program == 'Y') {
         Node* stack = NULL;
 
+        
+
         printf("\n=== —оздание стека ===\n");
         printf("1. ¬вести числа вручную\n");
         printf("2. —генерировать случайные числа\n");
