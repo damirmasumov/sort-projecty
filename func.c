@@ -92,3 +92,24 @@ int is_valid_integer(char* str) {
     }
     return 1;
 }
+void view_file_result(char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("Ошибка: не удалось открыть файл '%s'\n", filename);
+        return;
+    }
+
+    char line1[4096] = {0};
+    char line2[4096] = {0};
+
+    fgets(line1, sizeof(line1), file);
+    fgets(line2, sizeof(line2), file);
+
+    fclose(file);
+
+    line1[strcspn(line1, "\n")] = '\0';
+    line2[strcspn(line2, "\n")] = '\0';
+
+    printf("Исходный ряд:\n%s\n", line1);
+    printf("Отсортированный ряд:\n%s\n", line2);
+}

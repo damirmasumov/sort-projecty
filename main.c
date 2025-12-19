@@ -4,16 +4,23 @@
 #include <time.h>
 #include <ctype.h>
 #include "func.h"
-int main() {
+
+int main(int argc, char* argv[]) {
+    if (argc == 3 && strcmp(argv[1], "--file") == 0) {
+        view_file_result(argv[2]);
+        return 0;
+    }
+    else if (argc != 1) {
+        return 1;
+    }
+
     srand((unsigned int)time(NULL));
     char continue_program = 'y';
 
     while (continue_program == 'y' || continue_program == 'Y') {
         Node* stack = NULL;
 
-        
-
-        printf("\n=== —оздание стека ===\n");
+        printf("\n —оздание стека \n");
         printf("1. ¬вести числа вручную\n");
         printf("2. —генерировать случайные числа\n");
         printf("¬ыберите (1 или 2): ");
@@ -56,11 +63,12 @@ int main() {
             printf("—колько чисел? ");
             int count;
             if (scanf("%d", &count) != 1 || count <= 0) {
-                printf("ќшибка ввода!\n");
+                printf("ќшибка ввода! »спользуем 10000.\n");
+                count = 10000;
                 while (getchar() != '\n');
-                continue;
+            } else {
+                while (getchar() != '\n');
             }
-            while (getchar() != '\n');
             stack = generate_random_stack(count);
 
         } else {
@@ -73,7 +81,7 @@ int main() {
             continue;
         }
 
-        printf("\n--- ¬аш стек ---\n");
+        printf("\n ¬аш стек \n");
         print_stack(stack);
 
         char edit;
@@ -82,7 +90,7 @@ int main() {
         while (getchar() != '\n');
 
         while (edit == 'y' || edit == 'Y') {
-            printf("\n a Ч добавить, r Ч удалить, e Ч выйти: ");
+            printf("\na Ч добавить, r Ч удалить, q Ч выйти: ");
             char op;
             scanf(" %c", &op);
             while (getchar() != '\n');
@@ -105,48 +113,66 @@ int main() {
                 } else {
                     printf("—тек пуст!\n");
                 }
-            } else if (op == 'e') {
+            } else if (op == 'q') {
                 break;
             }
         }
 
-        int size = 0;
-        Node* temp = stack;
-        while (temp != NULL) {
-            size++;
-            temp = temp->next;
-        }
-       
-        printf("\n--- —ортировка пр€мым включением ---\n");
         Node* copy1 = copy_stack(stack);
         clock_t start = clock();
         Node* sorted1 = insertion_sort_list(copy1);
         clock_t end = clock();
         double time1 = ((double)(end - start)) / CLOCKS_PER_SEC;
-        print_stack(sorted1);
-        printf("¬рем€: %.6f сек\n", time1);
-        free_stack(sorted1);
 
-        printf("\n--- —ортировка сли€нием ---\n");
         Node* copy2 = copy_stack(stack);
         start = clock();
         Node* sorted2 = merge_sort_list(copy2);
         end = clock();
         double time2 = ((double)(end - start)) / CLOCKS_PER_SEC;
-        print_stack(sorted2);
+
+        printf("\n —ортировка пр€мым включением \n");
+        printf("¬рем€: %.6f сек\n", time1);
+        printf("ќтсортированный стек: ");
+        print_stack(sorted1);
+
+        printf("\n —ортировка сли€нием \n");
         printf("¬рем€: %.6f сек\n", time2);
-        free_stack(sorted2);
+        printf("ќтсортированный стек: ");
+        print_stack(sorted2);
 
-
-        FILE* log_file = fopen("sorting_results.csv", "a");
-        if (log_file != NULL) {
-            fprintf(log_file, "InsertionSort,%d,%.6f\n", size, time1);
-            fprintf(log_file, "MergeSort,%d,%.6f\n", size, time2);
-            fclose(log_file);
+        FILE* csv = fopen("sorting_results.csv", "a");
+        if (csv) {
+            if (ftell(csv) == 0) {
+                fprintf(csv, "Algorithm,Size,Time\n");
+            }
+            int size = 0;
+            Node* t = stack;
+            while (t) { size++; t = t->next; }
+            fprintf(csv, "InsertionSort,%d,%.6f\n", size, time1);
+            fprintf(csv, "MergeSort,%d,%.6f\n", size, time2);
+            fclose(csv);
         }
-        
-        
+
+        FILE* last_file = fopen("last_result.txt", "w");
+        if (last_file) {
+            Node* cur = stack;
+            while (cur) {
+                fprintf(last_file, "%d ", cur->data);
+                cur = cur->next;
+            }
+            fprintf(last_file, "\n");
+            cur = sorted1;
+            while (cur) {
+                fprintf(last_file, "%d ", cur->data);
+                cur = cur->next;
+            }
+            fprintf(last_file, "\n");
+            fclose(last_file);
+        }
+
         free_stack(stack);
+        free_stack(sorted1);
+        free_stack(sorted2);
 
         printf("\n«апустить снова? (y/n): ");
         scanf(" %c", &continue_program);
